@@ -34,7 +34,7 @@ export async function poll(streamr: StreamrClient, config: Config, log: (msg: an
 					metrics: prometheusEntry.metrics,
 					help: prometheusEntry.help
 				}
-				
+
 				// Don't include empty help messages
 				if (measurable.help === '') {
 					delete measurable.help

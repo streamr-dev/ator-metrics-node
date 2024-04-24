@@ -1,9 +1,7 @@
 import { Config } from './types/ConfigTypes'
 
-const VALIDATOR_BOR_STREAM = 'polygon-validators.eth/validator/bor'
-const VALIDATOR_HEIMDALL_STREAM = 'polygon-validators.eth/validator/heimdall'
-const SENTRY_BOR_STREAM = 'polygon-validators.eth/sentry/bor'
-const SENTRY_HEIMDALL_STREAM = 'polygon-validators.eth/sentry/heimdall'
+// TODO: rename streams for ator case
+const ATOR_NODE_STREAM = '0x4169e052642f0dd2a937f8b218f72243b2bcfd79/ator-metrics-test' // Todo: lets make a general stream for this
 
 function parseSentryConfig(envKeyUrls: string, envKeyNames: string, configBaseName: string, streamId: string): Config[] {
 	const result: Config[] = []
@@ -11,7 +9,7 @@ function parseSentryConfig(envKeyUrls: string, envKeyNames: string, configBaseNa
 
 	// Use default names if not explicitly given
 	const names = process.env[envKeyNames]?.split(',') || urls.map((url, index) => {
-		return process.env.VALIDATOR_NAME + (urls.length > 1 ? `-${index+1}` : '')
+		return process.env.VALIDATOR_NAME + (urls.length > 1 ? `-${index + 1}` : '')
 	})
 
 	if (urls.length !== names.length) {
@@ -32,11 +30,6 @@ function parseSentryConfig(envKeyUrls: string, envKeyNames: string, configBaseNa
 
 export function parseEnvToConfigs(): Config[] {
 	let result: Config[] = []
-	
-	result = result.concat(parseSentryConfig('VALIDATOR_HEIMDALL', 'VALIDATOR_HEIMDALL_NAMES', 'Validator Heimdall', VALIDATOR_HEIMDALL_STREAM))
-	result = result.concat(parseSentryConfig('VALIDATOR_BOR', 'VALIDATOR_BOR_NAMES', 'Validator Bor', VALIDATOR_BOR_STREAM))
-	result = result.concat(parseSentryConfig('SENTRY_HEIMDALL', 'SENTRY_HEIMDALL_NAMES', 'Sentry Heimdall', SENTRY_HEIMDALL_STREAM))
-	result = result.concat(parseSentryConfig('SENTRY_BOR', 'SENTRY_BOR_NAMES', 'Sentry Bor', SENTRY_BOR_STREAM))
-
+	result = result.concat(parseSentryConfig('VALIDATOR_NAME', 'NODE_NAMES', 'Ator Node', ATOR_NODE_STREAM))
 	return result
 }

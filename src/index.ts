@@ -4,6 +4,8 @@ import { parseEnvToConfigs } from './parseUtils'
 import { poll, getPrometheusMetrics } from './poll'
 
 // Check required env variables
+// Metrics private key required to be able to write to a common metrics stream
+// Validator name needed to differentiate metrics from one to another
 const requiredEnvs = ['METRICS_PRIVATE_KEY', 'VALIDATOR_NAME']
 if (requiredEnvs.find(envName => process.env[envName] == null)) {
 	console.error(`Error: The following env variables are required: \n${requiredEnvs.join('\n')}`)
@@ -12,11 +14,13 @@ if (requiredEnvs.find(envName => process.env[envName] == null)) {
 
 let configs: Config[]
 
+
+// Todo: change parser to support ator case
 try {
 	configs = parseEnvToConfigs()
 } catch (err) {
 	console.error(`${err}`)
-	process.exit(1)	
+	process.exit(1)
 }
 
 // If none of the endpoints are configured, error and stop
@@ -39,7 +43,7 @@ function log(obj: any, fn: (m: any) => void = console.log) {
 	fn(`${new Date().toISOString()} - ${obj}`)
 }
 
-;(async () => {
+; (async () => {
 	// For good measure, print the address for the configured private key
 	const address = await streamr.getAddress()
 	log(`Metrics node configured with address: ${address}`)
@@ -65,7 +69,7 @@ function log(obj: any, fn: (m: any) => void = console.log) {
 
 		// Check Prometheus API endpoint
 		log(`${configName}: Checking that Prometheus API is accessible at ${url}`)
-		try { 
+		try {
 			await getPrometheusMetrics(url, requestTimeoutSeconds)
 		} catch (err) {
 			throw new Error(`Couldn't successfully retrieve metrics for ${configName} from ${url}. Error was: ${err}`)
